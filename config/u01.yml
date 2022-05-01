@@ -1,0 +1,48 @@
+image: python:3
+
+variables:
+  AUFGABE4_FILE: for1
+  AUFGABE5_FILE: while1
+  AUFGABE6_FILE: temperaturen
+
+stages:
+  - Tests
+
+before_script:
+  - python --version
+  - git clone https://gitup.uni-potsdam.de/clemens/pdp.git
+  - git clone https://github.com/eliben/pycparser.git
+  - python3 -m venv .venv
+  - source .venv/bin/activate
+  - pip install --no-cache-dir -r pdp/requirements.txt
+  
+Aufgabe-4:
+  stage: Tests
+  only:
+    - master
+  script:
+    - bash pdp/checks/compile.sh $AUFGABE4_FILE.c $AUFGABE4_FILE
+    - bash pdp/checks/run_static_analysis.sh pdp/static_analysis/u01/$AUFGABE4_FILE.py
+    - ./$AUFGABE4_FILE > output.txt
+    - bash pdp/checks/run_diff.sh pdp/expected_output/u01/$AUFGABE4_FILE.txt
+
+Aufgabe-5:
+  stage: Tests
+  only:
+    - master
+  script:
+    - bash pdp/checks/compile.sh $AUFGABE5_FILE.c $AUFGABE5_FILE
+    - bash pdp/checks/run_static_analysis.sh pdp/static_analysis/u01/$AUFGABE5_FILE.py
+    - ./$AUFGABE5_FILE > output.txt
+    - bash pdp/checks/run_diff.sh pdp/expected_output/u01/$AUFGABE5_FILE.txt
+
+Aufgabe-6:
+  stage: Tests
+  only:
+    - master
+  script:
+    - bash pdp/checks/compile.sh $AUFGABE6_FILE.c $AUFGABE6_FILE
+    - bash pdp/checks/run_static_analysis.sh pdp/static_analysis/u01/$AUFGABE6_FILE.py
+    - ./$AUFGABE6_FILE > output.txt
+    - bash pdp/checks/run_diff.sh pdp/expected_output/u01/$AUFGABE6_FILE.txt
+
