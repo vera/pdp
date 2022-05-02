@@ -1,0 +1,47 @@
+image: python:3
+
+variables:
+  AUFGABE1_FILE: global
+  AUFGABE4_FILE: swap
+
+stages:
+  - Tests
+
+before_script:
+  - python --version
+  - git clone https://gitup.uni-potsdam.de/clemens/pdp.git
+  - git clone https://github.com/eliben/pycparser.git
+  - python3 -m venv .venv
+  - source .venv/bin/activate
+  - pip install --no-cache-dir -r pdp/requirements.txt
+  - echo "y" | apt install check
+  
+Aufgabe-1:
+  stage: Tests
+  only:
+    - master
+  script:
+    - bash pdp/checks/compile.sh $AUFGABE1_FILE.c $AUFGABE1_FILE
+    - bash pdp/checks/check_requirements_with_static_analysis.sh pdp/static_analysis/u02/$AUFGABE1_FILE.py
+    - gcc pdp/tests/u02/test_$AUFGABE1_FILE.c -o test_$AUFGABE1_FILE `pkg-config --cflags --libs check`
+    - bash pdp/tests/run_tests.sh test_$AUFGABE1_FILE
+    - bash pdp/checks/u02/check_output.sh $AUFGABE1_FILE
+  
+Aufgabe-2:
+  stage: Tests
+  only:
+    - master
+  script:
+    - bash pdp/checks/compile.sh $AUFGABE1_FILE.c $AUFGABE1_FILE
+    - bash pdp/checks/u02/check_error_handling.sh $AUFGABE1_FILE
+  
+Aufgabe-4:
+  stage: Tests
+  only:
+    - master
+  script:
+    - bash pdp/checks/compile.sh $AUFGABE4_FILE.c $AUFGABE4_FILE
+    - bash pdp/checks/check_requirements_with_static_analysis.sh pdp/static_analysis/u02/$AUFGABE4_FILE.py
+    - gcc pdp/tests/u02/test_$AUFGABE4_FILE.c -o test_$AUFGABE4_FILE `pkg-config --cflags --libs check`
+    - bash pdp/tests/run_tests.sh test_$AUFGABE4_FILE
+
