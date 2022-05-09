@@ -1,6 +1,4 @@
-diff output.txt $1 -B -w -i &> /dev/null
-
-echo $?
+grep -E -f $1 output.txt -i &> /dev/null
 
 if [ ! $? -eq 0 ]; then	
 	echo "	"
@@ -14,9 +12,9 @@ if [ ! $? -eq 0 ]; then
 	echo "	"
 	echo "Die geforderte Ausgabe lautet:"
 	echo "	"
-	cat $1
+	sed "s/\[\[:space:\]\]+/ /g" $1
 	echo "	"
-	echo "(Unterschiede in den Leerzeichen werden ignoriert.)"
+	echo "(Unterschiede in den Leerzeichen und evtl. zusätzliche Ausgaben werden ignoriert.)" | fold -s
 	echo "	"
 	echo "###############################################################################"
 	exit 1

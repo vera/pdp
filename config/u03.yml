@@ -1,0 +1,51 @@
+image: python:3
+
+variables:
+  AUFGABE3_FILE: sqr_array_1
+  AUFGABE4_FILE: sqr_array_2
+  AUFGABE5_FILE: sqr_array_3
+
+stages:
+  - Tests
+
+before_script:
+  - python --version
+  - git clone https://gitup.uni-potsdam.de/clemens/pdp.git
+  - git clone https://github.com/eliben/pycparser.git
+  - python3 -m venv .venv
+  - source .venv/bin/activate
+  - pip install --no-cache-dir -r pdp/requirements.txt
+  - echo "y" | apt install check
+  
+Aufgabe-3:
+  stage: Tests
+  only:
+    - master
+  script:
+    - bash pdp/checks/compile.sh $AUFGABE3_FILE.c $AUFGABE3_FILE
+    - bash pdp/checks/check_macro.sh $AUFGABE3_FILE 10
+    - bash pdp/checks/check_requirements_with_static_analysis.sh pdp/static_analysis/u03/$AUFGABE3_FILE.py
+    - ./$AUFGABE3_FILE > output.txt
+    - bash pdp/checks/run_diff.sh pdp/expected_output/u03/$AUFGABE3_FILE.txt
+  
+Aufgabe-4:
+  stage: Tests
+  only:
+    - master
+  script:
+    - bash pdp/checks/compile.sh $AUFGABE4_FILE.c $AUFGABE4_FILE
+    - bash pdp/checks/check_macro.sh $AUFGABE4_FILE 10
+    - bash pdp/checks/check_requirements_with_static_analysis.sh pdp/static_analysis/u03/$AUFGABE4_FILE.py
+    - ./$AUFGABE4_FILE > output.txt
+    - bash pdp/checks/run_grep.sh pdp/expected_output/u03/$AUFGABE4_FILE.txt
+  
+Aufgabe-5:
+  stage: Tests
+  only:
+    - master
+  script:
+    - bash pdp/checks/compile.sh $AUFGABE5_FILE.c $AUFGABE5_FILE
+    - bash pdp/checks/check_macro.sh $AUFGABE5_FILE 1000
+    - bash pdp/checks/check_requirements_with_static_analysis.sh pdp/static_analysis/u03/$AUFGABE5_FILE.py
+    - bash pdp/checks/u03/check_user_input_loop.sh $AUFGABE5_FILE
+

@@ -1,0 +1,1 @@
+100[[:space:]]+81[[:space:]]+64[[:space:]]+49[[:space:]]+36[[:space:]]+25[[:space:]]+16[[:space:]]+9[[:space:]]+4[[:space:]]+1
