@@ -4,7 +4,7 @@ if [ ! $? -eq 0 ]; then
 	echo "	"
 	echo "###############################################################################"
 	echo "	"
-	echo "Die Ausgabe deines Programms stimmt nicht mit der geforderten Ausgabe überein." | fold -s
+	echo "Die Ausgabe deines Programms enthält nicht die geforderte Ausgabe." | fold -s
 	echo "	"
 	echo "Deine Ausgabe lautet:"
 	echo "	"
@@ -22,7 +22,15 @@ else
 	echo "	"
 	echo "###############################################################################"
 	echo "	"
-	echo "Super! Die Ausgabe deines Programms stimmt mit der geforderten Ausgabe überein." | fold -s
+	echo "Super! Die Ausgabe deines Programms enthält die geforderte Ausgabe." | fold -s
+	echo "	"
+	echo "Deine Ausgabe lautet:"
+	echo "	"
+	cat output.txt
+	echo "	"
+	echo "Die geforderte Ausgabe lautet:"
+	echo "	"
+	sed "s/\[\[:space:\]\]+/ /g" $1
 	echo "	"
 	echo "###############################################################################"
 fi
