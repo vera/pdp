@@ -1,0 +1,31 @@
+image: python:3
+
+variables:
+  AUFGABE2_FILE: long_long_bytes
+
+stages:
+  - Tests
+
+before_script:
+  - python --version
+  - git clone https://gitup.uni-potsdam.de/clemens/pdp.git
+  - git clone https://github.com/eliben/pycparser.git
+  - python3 -m venv .venv
+  - source .venv/bin/activate
+  - pip install --no-cache-dir -r pdp/requirements.txt
+  - echo "y" | apt install check
+  
+Aufgabe-2:
+  stage: Tests
+  only:
+    - master
+  script:
+    - bash pdp/checks/compile.sh $AUFGABE2_FILE.c $AUFGABE2_FILE
+    - bash pdp/checks/check_requirements_with_static_analysis.sh pdp/static_analysis/u04/$AUFGABE2_FILE.py
+    - ./$AUFGABE2_FILE > output.txt
+    - bash pdp/checks/run_grep.sh pdp/expected_output/u04/${AUFGABE2_FILE}_1.txt
+    - bash pdp/checks/run_grep.sh pdp/expected_output/u04/${AUFGABE2_FILE}_2.txt
+    - bash pdp/checks/run_grep.sh pdp/expected_output/u04/${AUFGABE2_FILE}_3.txt
+    - bash pdp/checks/run_grep.sh pdp/expected_output/u04/${AUFGABE2_FILE}_4.txt
+    - bash pdp/checks/run_grep.sh pdp/expected_output/u04/${AUFGABE2_FILE}_5.txt 2
+

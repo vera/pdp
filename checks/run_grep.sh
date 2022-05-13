@@ -1,4 +1,9 @@
-grep -E -f $1 output.txt -i &> /dev/null
+if [ -z "$2" ]; then
+	grep -E -f $1 output.txt -i &> /dev/null
+else
+	NUM_MATCHED_LINES=`grep -E -f $1 output.txt -i 2> /dev/null | wc -l`
+	[ $NUM_MATCHED_LINES -gt 1 ]
+fi
 
 if [ ! $? -eq 0 ]; then	
 	echo "	"
@@ -12,7 +17,7 @@ if [ ! $? -eq 0 ]; then
 	echo "	"
 	echo "Die geforderte Ausgabe lautet:"
 	echo "	"
-	sed "s/\[\[:space:\]\]+/ /g" $1
+	sed "s/\[\+[^]]\+\]\++\?/ /g" $1
 	echo "	"
 	echo "(Unterschiede in den Leerzeichen und evtl. zusätzliche Ausgaben werden ignoriert.)" | fold -s
 	echo "	"
@@ -30,7 +35,7 @@ else
 	echo "	"
 	echo "Die geforderte Ausgabe lautet:"
 	echo "	"
-	sed "s/\[\[:space:\]\]+/ /g" $1
+	sed "s/\[\+[^]]\+\]\++\?/ /g" $1
 	echo "	"
 	echo "###############################################################################"
 fi
